@@ -22,7 +22,7 @@ public:
     std::string x,y;
     x = position[0];
     y = position[1];
-    std::string str = "\nPlAYER: " + player + "\n"
+    std::string str = "\nPLAYER: " + player + "\n"
                   + "POSITION: " + x + " " + y + "\n"
                   + "TYPE: " + chess_piece_type + "\n";
     return str;
