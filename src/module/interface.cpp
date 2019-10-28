@@ -7,11 +7,16 @@ std::string new_game() {
   std::string player;
   std::cout << "Who Goes First? Black or White" << '\n';
   player = read();
-  while (checkStart(player) == 0) {
+  int p = checkStart(player)
+  while (p == 0) {
     std::cout << "Who Goes First? Black or White" << '\n';
     player = read();
   }
-  return player;
+  if (p == 1) {
+    return "B";
+  } else {
+    return "W";
+  }
 }
 
 
@@ -35,4 +40,16 @@ int checkStart(std::string player) {
     }
   }
   return 0;
+}
+
+std::string oturn() {
+  std::cout << "Move Peice from Position: ";
+  std::string move = read();
+  return move;
+}
+
+std::string nturn() {
+  std::cout << "To: ";
+  std::string move = read();
+  return move;
 }

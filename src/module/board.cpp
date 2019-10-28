@@ -38,12 +38,37 @@ Chess_board initialize_board() {
           }
         }
       }
-      
-    draw_board();
     return *new_board;
 }
 
-void draw_board() {
+void draw_board(Chess_board board) {
 
 
+}
+
+Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove) {
+
+
+
+}
+
+
+std::string searchPieceType(Chess_board board, std::string move) {
+  std::string pos;
+  for (int i = 0; i < (int)board.piec.size(); i++) {
+     pos = board.piec[i].position[0] + board.piec[i].position[1];
+     if (move == pos) {
+       return board.piec[i].player;
+     }
+  }
+  return "NULL";
+}
+
+
+bool canMove(Chess_board board, std::string oldMove, std::string newMove) {
+  std::string piece_type = searchPieceType(board,oldMove);
+  if (piece_type == "NULL") {
+    return true;
+  }
+  return false;
 }
