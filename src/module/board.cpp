@@ -42,13 +42,26 @@ Chess_board initialize_board() {
 }
 
 void draw_board(Chess_board board) {
+  for (int i = 0; i < (int)board.piec.size(); i++) {
 
+    std::cout << board.piec[i]->toString();
+
+  }
 
 }
 
 Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove) {
-
-
+    std::string pos;
+    Chess_board new_board = board;
+  for (int i = 0; i < (int)board.piec.size(); i++) {
+     pos = new_board.piec[i]->position[0] + new_board.piec[i]->position[1];
+     if (oldMove == pos) {
+       new_board.piec[i]->position[0] = newMove[0];
+       new_board.piec[i]->position[1] = newMove[1];
+       return new_board;
+     }
+  }
+  return board;
 
 }
 
@@ -56,9 +69,9 @@ Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMov
 std::string searchPieceType(Chess_board board, std::string move) {
   std::string pos;
   for (int i = 0; i < (int)board.piec.size(); i++) {
-     pos = board.piec[i].position[0] + board.piec[i].position[1];
+     pos = board.piec[i]->position[0] + board.piec[i]->position[1];
      if (move == pos) {
-       return board.piec[i].player;
+       return board.piec[i]->player;
      }
   }
   return "NULL";
@@ -66,9 +79,17 @@ std::string searchPieceType(Chess_board board, std::string move) {
 
 
 bool canMove(Chess_board board, std::string oldMove, std::string newMove) {
+  //piece_type and taken are used to check if the position has a piece and
+  //the next position is empty. TODO: check if the piece can legally move there
   std::string piece_type = searchPieceType(board,oldMove);
-  if (piece_type == "NULL") {
+  std::string taken = searchPieceType(board,newMove);
+  if (piece_type == "NULL" || taken != "NULL") {
     return true;
   }
   return false;
+}
+
+int checkMate(Chess_board board) {
+
+  return 0;
 }

@@ -41,10 +41,16 @@ public:
 
 };
 
-
+int checkMate(Chess_board board);
 
 Chess_board initialize_board();
 
-void draw_board();
+void draw_board(Chess_board board);
+
+Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove);
+
+std::string searchPieceType(Chess_board board, std::string move);
+
+bool canMove(Chess_board board, std::string oldMove, std::string newMove);
 
 #endif /* Board */

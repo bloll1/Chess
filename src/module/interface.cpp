@@ -7,10 +7,11 @@ std::string new_game() {
   std::string player;
   std::cout << "Who Goes First? Black or White" << '\n';
   player = read();
-  int p = checkStart(player)
+  int p = checkStart(player);
   while (p == 0) {
     std::cout << "Who Goes First? Black or White" << '\n';
     player = read();
+    p = checkStart(player);
   }
   if (p == 1) {
     return "B";
