@@ -12,14 +12,13 @@ public:
 
 
 
-  Chess_board();
+  Chess_board() : piec () {
+    //piec.resize(3);
 
-  void addPiece(Chess_piece *p) {
+  };
 
+  void addPiece(Chess_piece *p){
 
-    std::cout << "HI" << '\n';
-    std::cout << p->toString();
-    std::cout << "BYE" << '\n';
 
     piec.push_back(p);
 

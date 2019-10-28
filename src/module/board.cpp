@@ -4,13 +4,12 @@
 #include <string>
 
 Chess_board initialize_board() {
-    Chess_board *new_board = NULL;
+    Chess_board *new_board = new Chess_board();
     std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
     std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
     std::string chess_pieces[8] = {"rook","knight","bishop","king","queen",
                                     "bishop", "knight", "rook"};
 
-      std::cout << "EMPTY" <<  new_board->piec.empty() << '\n';                                
   //  int count = 0;
       //ADD PAWN OBJECTS:
       for (int y = 0; y < 2; y++) {
