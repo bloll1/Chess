@@ -10,22 +10,17 @@ Chess_board initialize_board() {
     std::string chess_pieces[8] = {"rook","knight","bishop","king","queen",
                                     "bishop", "knight", "rook"};
 
-  //  int count = 0;
-      //ADD PAWN OBJECTS:
       for (int y = 0; y < 2; y++) {
         for (int x = 0; x < 8; x++) {
             if (y == 0) {
               Chess_piece *p = new Chess_piece(position_x[x], position_y[1],
                                   "white", "pawn");
-
               new_board->addPiece(p);
-              //count++;
+
             } else {
               Chess_piece *p = new Chess_piece(position_x[x], position_y[6],
                                   "black", "pawn");
-
               new_board->addPiece(p);
-              //count++;
             }
           }
         }
@@ -34,21 +29,17 @@ Chess_board initialize_board() {
           if (b == 0) {
             Chess_piece *p = new Chess_piece(position_x[d], position_y[0],
                                 "white", chess_pieces[d]);
-
             new_board->addPiece( p);
-          //count++;
+
           } else {
             Chess_piece *p = new Chess_piece(position_x[d], position_y[7],
                                 "black", chess_pieces[d]);
-
             new_board->addPiece( p);
-            //count++;
           }
         }
       }
-
+      
     draw_board();
-
     return *new_board;
 }
 

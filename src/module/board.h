@@ -4,24 +4,28 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include <array>
 
 struct Chess_board {
 public:
-  std::string chess_piece_types[6] = {"pawn","bishop","knight","king","queen",
-                                      "rook"};
+  //std::string chess_piece_types[6] = {"pawn","bishop","knight","king","queen",
+              //                        "rook"};
   std::vector<Chess_piece*> piec;
 
-  std::vector< char( * )[3] > boardcord;
+  std::vector< char( * ) > boardcord;
 
 
   Chess_board(){
     char position_x[8] = {'a','b','c','d','e','f','g','h'};
     char position_y[8] = {'1','2','3','4','5','6','7','8'};
-    for (int i = 0; i < 64; i++) {
-
-      char cord[3] = {position_x[i % 8], ',' , position_y[i % 8]};
-      boardcord.push_back(&cord);
+    for (int x = 0; x < 8; x++) {
+      for (int y = 0; y < 8; y++) {
+        char * str3 = (char *)malloc(3);
+        char arb[3] = {position_x[x % 8] ,position_y[y % 8] , '\0'};
+        strncpy(str3, (char *)arb, 3);
+        boardcord.push_back(str3);
+      }
     }
   };
 
@@ -32,9 +36,7 @@ public:
 
 
   std::string toString(int n) {
-
-
-    return str;
+    return std::string( boardcord.at(n));
   };
 
 };
