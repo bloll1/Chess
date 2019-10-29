@@ -22,28 +22,25 @@ int main(int argc, char const *argv[]) {
     while (can) {
       oldMove = oturn(turn);
       newMove = nturn();
-      if (turn) {
-        can = canMove(board, oldMove, newMove, player[1]);
-      } else {
-        can = canMove(board,oldMove,newMove, player[0]);
-      }
+      can = canMove(board, oldMove, newMove, player[turn]);
 
       if (can) {
         std::cout << "SORRY CANT DO THAT" << '\n';
       }
     }
-    if (turn) {
-      board = movePiece(board, oldMove, newMove, player[1]);
-    } else {
-      board = movePiece(board, oldMove, newMove, player[0]);
+
+    board = movePiece(board, oldMove, newMove, player[turn]);
+    winner = checkMate(board, player[turn], newMove);
+
+    if (winner == 0) {
+      turn = !turn;
     }
 
-    //turn = !turn;
     draw_board(board);
-    winner = checkMate(board);
 
     can = true;
 
   }
+  std::cout << "Congratulations player " << player[turn] << " you win!" << '\n';
   return 0;
 }

@@ -43,11 +43,7 @@ Chess_board initialize_board() {
 
 void draw_board(Chess_board board) {
   for (int i = 0; i < (int)board.piec.size(); i++) {
-    if ((board.piec[i]->chess_piece_type == "queen" ||board.piec[i]->chess_piece_type == "pawn" ) &&
-  board.piec[i]->player == "white") {
       std::cout << board.piec[i]->toString();
-    }
-
   }
 
 }
@@ -121,7 +117,7 @@ std::string translateAddress(std::string oldMove, std::string newMove) {
   std::string oY(1, oldMove[1]);
   std::string nX(1, newMove[0]);
   std::string nY(1, newMove[1]);
-  std::cout << "BEFORE ADDRESS TRANSLATION: "  << oX << oY << nX << nY << '\n';
+  //std::cout << "BEFORE ADDRESS TRANSLATION: "  << oX << oY << nX << nY << '\n';
   int oldX;
   int oldY;
   int newX;
@@ -137,7 +133,7 @@ std::string translateAddress(std::string oldMove, std::string newMove) {
       oldY= i;
     }
   }
-  std::cout << "AFTER ADDRESS TRANSLATION: "  << (std::to_string(oldX) + std::to_string(oldY) + std::to_string(newX) + std::to_string(newY)) << "\n";
+  //std::cout << "AFTER ADDRESS TRANSLATION: "  << (std::to_string(oldX) + std::to_string(oldY) + std::to_string(newX) + std::to_string(newY)) << "\n";
   return (std::to_string(oldX) + " " + std::to_string(oldY) + " " + std::to_string(newX) + " " + std::to_string(newY));
 }
 
@@ -392,7 +388,62 @@ bool legalPieceMove(Chess_board board, std::string oldMove, std::string newMove,
   return false;
 }
 
-int checkMate(Chess_board board) {
+bool canDelete(Chess_board board, std::string pos, std::string player) {
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+  std::string piece_type = searchPieceType(board,pos);
 
-  return 0;
+  for (int i = 0; i < 8; i++) {
+    if (position_x[i] + position_y[i] != pos &&
+          searchPieceType(board,position_x[i] + position_y[i]) == "king" &&
+            legalPieceMove(board, pos, position_x[i] + position_y[i], player) &&
+              searchPlayerType(board, position_x[i] + position_y[i]) != player) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool canMoveWithoutDelete(Chess_board board, std::string pos, std::string player) {
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+    for (int i = 0; i < 8; i++) {
+      if (position_x[i] + position_y[i] != pos &&
+            canDelete(board, position_x[i] + position_y[i], player)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+bool canKingMove(Chess_board board, std::string player) {
+  std::string players[] = {"white", "black"};
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+  for (int i = 0; i < 8; i++) {
+    if (searchPieceType(board,position_x[i] + position_y[i]) == "king" &&
+          searchPlayerType(board, position_x[i] + position_y[i]) == player) {
+            for (int y = 0; y < 3; y++) {
+              for (int x = 0; x < 3; x++) {
+                if (x != 1 && y != 1 && i + y != 0 && i + x != 0 && i + y < 9 && i + x < 9) {
+                  if (legalPieceMove(board, position_x[i] + position_y[i],
+                        position_x[i - 1 + x] + position_y[i - 1 + y], player) &&
+                          canMoveWithoutDelete(board, position_x[i - 1 + x] + position_y[i - 1 + y], player)) {
+                        return true;
+                      }
+                  }
+              }
+            }
+            return false;
+    }
+  }
+  return true;
+}
+
+int checkMate(Chess_board board, std::string player, std::string pos) {
+  if (canDelete(board,pos,player) && canKingMove(board, player) != true) {
+    return 1;
+  } else {
+    return 0;
+  }
 }

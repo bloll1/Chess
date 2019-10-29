@@ -41,6 +41,14 @@ public:
 
 };
 
+bool canDelete(Chess_board board, std::string pos, std::string player);
+
+bool canKingMove(Chess_board board, std::string player);
+
+int checkMate(Chess_board board, std::string player, std::string pos);
+
+bool canMoveWithoutDelete(Chess_board board, std::string pos, std::string player);
+
 std::string searchPlayerType(Chess_board board, std::string move);
 
 bool legalQueenMove(Chess_board board, std::string oldMove, std::string newMove);
