@@ -1,6 +1,6 @@
 
 #include "board.h"
-
+#include <sstream>
 #include <string>
 
 Chess_board initialize_board() {
@@ -43,19 +43,24 @@ Chess_board initialize_board() {
 
 void draw_board(Chess_board board) {
   for (int i = 0; i < (int)board.piec.size(); i++) {
-
-    std::cout << board.piec[i]->toString();
+    if (board.piec[i]->chess_piece_type == "rook") {
+      std::cout << board.piec[i]->toString();
+    }
 
   }
 
 }
 
-Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove) {
+Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
     std::string pos;
     Chess_board new_board = board;
+    std::string taken = searchPlayerType(board,newMove);
   for (int i = 0; i < (int)board.piec.size(); i++) {
      pos = new_board.piec[i]->position[0] + new_board.piec[i]->position[1];
      if (oldMove == pos) {
+       if (taken != player && taken != "NULL") {
+         new_board.piec.erase(new_board.piec.begin()+i);
+       }
        new_board.piec[i]->position[0] = newMove[0];
        new_board.piec[i]->position[1] = newMove[1];
        return new_board;
@@ -71,6 +76,17 @@ std::string searchPieceType(Chess_board board, std::string move) {
   for (int i = 0; i < (int)board.piec.size(); i++) {
      pos = board.piec[i]->position[0] + board.piec[i]->position[1];
      if (move == pos) {
+       return board.piec[i]->chess_piece_type;
+     }
+  }
+  return "NULL";
+}
+
+std::string searchPlayerType(Chess_board board, std::string move) {
+  std::string pos;
+  for (int i = 0; i < (int)board.piec.size(); i++) {
+     pos = board.piec[i]->position[0] + board.piec[i]->position[1];
+     if (move == pos) {
        return board.piec[i]->player;
      }
   }
@@ -78,14 +94,205 @@ std::string searchPieceType(Chess_board board, std::string move) {
 }
 
 
-bool canMove(Chess_board board, std::string oldMove, std::string newMove) {
+bool canMove(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
   //piece_type and taken are used to check if the position has a piece and
   //the next position is empty. TODO: check if the piece can legally move there
+  std::string player_type = searchPlayerType(board, oldMove);
+  std::cout << "PLAYER_TYPE: " << player_type << '\n';
   std::string piece_type = searchPieceType(board,oldMove);
-  std::string taken = searchPieceType(board,newMove);
-  if (piece_type == "NULL" || taken != "NULL") {
+  std::cout << "PIECE TYPE: " << piece_type << '\n';
+
+  std::string taken = searchPlayerType(board,newMove);
+  std::cout << "TAKEN: " << taken << '\n';
+
+  if (player_type != player || piece_type == "NULL" ||
+    taken == player || !legalPieceMove(board, oldMove, newMove, player)) {
     return true;
   }
+  return false;
+}
+
+
+std::string translateAddress(std::string oldMove, std::string newMove) {
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+  std::string oX(1, oldMove[0]);
+  std::string oY(1, oldMove[1]);
+  std::string nX(1, newMove[0]);
+  std::string nY(1, newMove[1]);
+  std::cout << "BEFORE ADDRESS TRANSLATION: "  << oX << oY << nX << nY << '\n';
+  int oldX;
+  int oldY;
+  int newX;
+  int newY;
+  for (int i = 0; i < 8; i++) {
+    if (nX == position_x[i]) {
+      newX = i;
+    } if (nY == position_y[i]) {
+      newY= i;
+    } if (oX == position_x[i]) {
+      oldX= i;
+    } if (oY == position_y[i]) {
+      oldY= i;
+    }
+  }
+  std::cout << "AFTER ADDRESS TRANSLATION: "  << (std::to_string(oldX) + std::to_string(oldY) + std::to_string(newX) + std::to_string(newY)) << "\n";
+  return (std::to_string(oldX) + " " + std::to_string(oldY) + " " + std::to_string(newX) + " " + std::to_string(newY));
+}
+
+bool legalPawnMove(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+  std::stringstream ss(translateAddress(oldMove, newMove));
+  int oldX, oldY, newX, newY;
+
+  ss >> oldX;
+  ss >> oldY;
+  ss >> newX;
+  ss >> newY;
+
+  if (player == "black") {
+    if (oldY - 1 == newY) {
+      return true;
+    } else if ((oldX - 1 == newX|| oldX + 1 == newX) && oldY - 1 == newY){
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    if (oldY + 1 == newY) {
+      return true;
+    } else if ((oldX - 1 == newX || oldX + 1 == newX) && oldY + 1 == newY){
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+bool legalKnightMove(Chess_board board, std::string oldMove, std::string newMove) {
+  std::stringstream ss(translateAddress(oldMove, newMove));
+  int oldX, oldY, newX, newY;
+
+  ss >> oldX;
+  std::cout << "OLDX: " << oldX << '\n';
+  ss >> oldY;
+  std::cout << "OLDY: " << oldY << '\n';
+  ss >> newX;
+  std::cout << "NEWX: " << newX << '\n';
+  ss >> newY;
+  std::cout << "NEWY: " << newY << '\n';
+
+  if ((oldY - 2 == newY || oldY + 2 == newY) && (oldX + 1 == newX || oldX - 1 == newX)) {
+    return true;
+  } else if ((oldX - 2 == newX || oldX + 2 == newX) && (oldY + 1 == newY || oldY - 1 == newY)) {
+    return true;
+  } else  {
+    return false;
+  }
+}
+
+bool legalKingMove(Chess_board board, std::string oldMove, std::string newMove) {
+  std::stringstream ss(translateAddress(oldMove, newMove));
+  int oldX, oldY, newX, newY;
+
+  ss >> oldX;
+  ss >> oldY;
+  ss >> newX;
+  ss >> newY;
+
+  if ((oldX - 1 == newX || oldX + 1 == newX || oldX == newX) &&
+   (oldY - 1 == newY || oldY == newY || oldY + 1 == newY) && !(oldX == newX && oldY == newY)) {
+     return true;
+   } else {
+     return false;
+   }
+}
+
+bool legalRookMove(Chess_board board, std::string oldMove, std::string newMove) {
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+  std::stringstream ss(translateAddress(oldMove, newMove));
+  int oldX, oldY, newX, newY, change;
+  std::string taken;
+  std::string newCheck;
+  ss >> oldX;
+  ss >> oldY;
+  ss >> newX;
+  ss >> newY;
+
+  if (oldX != newX && oldY != newY) {
+    return false;
+  }
+  if (oldX != newX) {
+    if (oldX > newX) {
+      change = oldX - newX;
+      for (int i = 1; i < change; i++) {
+        newCheck = position_x[oldX - i] + position_y[oldY];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+
+          return false;
+        }
+      }
+      return true;
+    } else {
+      change = newX - oldX;
+      for (int i = 1; i < change; i++) {
+        newCheck = position_x[oldX + i] + position_y[oldY];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+          return false;
+        }
+      }
+      return true;
+    }
+  } else {
+    if (oldY > newY) {
+      change = oldY - newY;
+      for (int i = 1; i < change; i++) {
+        newCheck = position_x[oldX] + position_y[oldY - i];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      change = newY - oldY;
+      for (int i = 1; i < change; i++) {
+        newCheck = position_x[oldX] + position_y[oldY + i];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+          return false;
+        }
+      }
+      return true;
+    }
+
+  }
+
+  return false;
+}
+
+bool legalPieceMove(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+  std::string taken = searchPieceType(board,newMove);
+  std::string piece_type = searchPieceType(board,oldMove);
+  std::cout << "PIECE TYPE: "<< piece_type << '\n';
+  if (piece_type == "pawn") {
+      return legalPawnMove(board, oldMove, newMove, player);
+  } else if (piece_type == "knight") {
+      std::cout << "CALLING legalKingMove" << '\n';
+      return legalKnightMove(board, oldMove, newMove);
+  } else if (piece_type == "king") {
+      return legalKingMove(board, oldMove, newMove);
+  } else if (piece_type == "bishop") {
+
+  } else if (piece_type == "queen") {
+
+  } else if (piece_type == "rook") {
+    std::cout << "CALLING rook" << '\n';
+    return legalRookMove(board, oldMove, newMove);
+  }
+  std::cout << "NOT CALLING" << '\n';
   return false;
 }
 

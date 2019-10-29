@@ -13,10 +13,11 @@ std::string new_game() {
     player = read();
     p = checkStart(player);
   }
+  std::cout << '\n';
   if (p == 1) {
-    return "B";
+    return "black";
   } else {
-    return "W";
+    return "white";
   }
 }
 
@@ -43,7 +44,12 @@ int checkStart(std::string player) {
   return 0;
 }
 
-std::string oturn() {
+std::string oturn(int turn) {
+  if (turn) {
+    std::cout << "Black's turn" << '\n';
+  } else {
+    std::cout << "White's turn" << '\n';
+  }
   std::cout << "Move Peice from Position: ";
   std::string move = read();
   return move;

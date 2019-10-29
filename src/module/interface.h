@@ -5,7 +5,7 @@ std::string new_game();
 
 //std::string prompt();
 
-std::string oturn();
+std::string oturn(int turn);
 
 std::string read();
 

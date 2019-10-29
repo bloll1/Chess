@@ -41,16 +41,28 @@ public:
 
 };
 
+std::string searchPlayerType(Chess_board board, std::string move);
+
+bool legalRookMove(Chess_board board, std::string oldMove, std::string newMove);
+
+bool legalKingMove(Chess_board board, std::string oldMove, std::string newMove);
+
+bool legalPawnMove(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
+bool legalKnightMove(Chess_board board, std::string oldMove, std::string newMove);
+
+bool legalPieceMove(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
 int checkMate(Chess_board board);
 
 Chess_board initialize_board();
 
 void draw_board(Chess_board board);
 
-Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove);
+Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove, std::string player);
 
 std::string searchPieceType(Chess_board board, std::string move);
 
-bool canMove(Chess_board board, std::string oldMove, std::string newMove);
+bool canMove(Chess_board board, std::string oldMove, std::string newMove, std::string player);
 
 #endif /* Board */
