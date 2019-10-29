@@ -38,7 +38,7 @@ int main(int argc, char const *argv[]) {
       board = movePiece(board, oldMove, newMove, player[0]);
     }
 
-    turn = !turn;
+    //turn = !turn;
     draw_board(board);
     winner = checkMate(board);
 

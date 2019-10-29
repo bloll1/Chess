@@ -43,6 +43,8 @@ public:
 
 std::string searchPlayerType(Chess_board board, std::string move);
 
+bool legalBishopMove(Chess_board board, std::string oldMove, std::string newMove);
+
 bool legalRookMove(Chess_board board, std::string oldMove, std::string newMove);
 
 bool legalKingMove(Chess_board board, std::string oldMove, std::string newMove);

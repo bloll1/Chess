@@ -43,7 +43,8 @@ Chess_board initialize_board() {
 
 void draw_board(Chess_board board) {
   for (int i = 0; i < (int)board.piec.size(); i++) {
-    if (board.piec[i]->chess_piece_type == "rook") {
+    if ((board.piec[i]->chess_piece_type == "bishop" ||board.piec[i]->chess_piece_type == "pawn" ) &&
+  board.piec[i]->player == "white") {
       std::cout << board.piec[i]->toString();
     }
 
@@ -229,7 +230,6 @@ bool legalRookMove(Chess_board board, std::string oldMove, std::string newMove) 
         newCheck = position_x[oldX - i] + position_y[oldY];
         taken = searchPlayerType(board,newCheck);
         if (taken != "NULL") {
-
           return false;
         }
       }
@@ -267,9 +267,96 @@ bool legalRookMove(Chess_board board, std::string oldMove, std::string newMove) 
       }
       return true;
     }
-
   }
+  return false;
+}
 
+
+bool legalBishopMove(Chess_board board, std::string oldMove, std::string newMove) {
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+  std::stringstream ss(translateAddress(oldMove, newMove));
+  int oldX, oldY, newX, newY, changeX; //changeY;
+  std::string taken;
+  std::string newCheck;
+  ss >> oldX;
+  ss >> oldY;
+  ss >> newX;
+  ss >> newY;
+
+  if (oldX == newX || oldY == newY) {
+    return false;
+  }
+  if (oldX > newX) {
+    if (oldY > newY) {
+      if ((oldX - newX) != (oldY - newY)) {
+        return false;
+      }
+      changeX = oldX - newX;
+      //changeY = oldY - newY;
+      for (int i = 1; i < changeX; i++) {
+        newCheck = position_x[oldX - i] + position_y[oldY - i];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+          return false;
+        }
+      }
+      return true;
+
+    } else {
+      if ((oldX - newX) != (newY - oldY)) {
+        std::cout << "RETURNED FALSE HERE!1" << '\n';
+        return false;
+      }
+      changeX = oldX - newX;
+      //changeY = newY - oldY;
+      for (int i = 1; i < changeX; i++) {
+        newCheck = position_x[oldX - i] + position_y[oldY + i];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+          std::cout << "RETURNED FALSE HERE!2" << '\n';
+          return false;
+        }
+      }
+      return true;
+    }
+
+  } else {
+    if (oldY > newY) {
+      if ((newX - oldX) != (oldY - newY)) {
+        std::cout << "RETURNED FALSE HERE!3" << '\n';
+        return false;
+      }
+      changeX = newX - oldX;
+      //changeY = oldY - newY;
+      for (int i = 1; i < changeX; i++) {
+        newCheck = position_x[oldX + i] + position_y[oldY - i];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+          std::cout << "RETURNED FALSE HERE!4" << '\n';
+          return false;
+        }
+      }
+      return true;
+    } else {
+      if ((newX - oldX) != (newY - oldY)) {
+        return false;
+      }
+      changeX = newX - oldX;
+      //changeY = newY - oldY;
+      for (int i = 1; i < changeX; i++) {
+        newCheck = position_x[oldX + i] + position_y[oldY + i];
+        taken = searchPlayerType(board,newCheck);
+        if (taken != "NULL") {
+
+
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+  //std::cout << "RETURNED FALSE HERE" << '\n';
   return false;
 }
 
@@ -285,7 +372,7 @@ bool legalPieceMove(Chess_board board, std::string oldMove, std::string newMove,
   } else if (piece_type == "king") {
       return legalKingMove(board, oldMove, newMove);
   } else if (piece_type == "bishop") {
-
+      return legalBishopMove(board, oldMove, newMove);
   } else if (piece_type == "queen") {
 
   } else if (piece_type == "rook") {
