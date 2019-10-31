@@ -41,7 +41,7 @@ public:
 
 };
 
-bool canDelete(Chess_board board, std::string pos, std::string player);
+bool canDelete(Chess_board board, std::string pos, std::string player, std::string piece);
 
 bool canKingMove(Chess_board board, std::string player);
 

@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
     }
 
     board = movePiece(board, oldMove, newMove, player[turn]);
-    winner = checkMate(board, player[turn], newMove);
+    winner = checkMate(board, player[!turn], newMove);
 
     if (winner == 0) {
       turn = !turn;
