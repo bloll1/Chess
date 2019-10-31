@@ -41,11 +41,17 @@ public:
 
 };
 
+bool pieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
+bool isMovingKing(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
+bool inCheck(Chess_board board, std::string player, std::string pos);
+
 bool canDelete(Chess_board board, std::string pos, std::string player, std::string piece);
 
 bool canKingMove(Chess_board board, std::string player);
 
-int checkMate(Chess_board board, std::string player, std::string pos);
+bool checkMate(Chess_board board, std::string player);
 
 bool canMoveWithoutDelete(Chess_board board, std::string pos, std::string player);
 

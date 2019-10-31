@@ -92,8 +92,6 @@ std::string searchPlayerType(Chess_board board, std::string move) {
 
 
 bool canMove(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
-  //piece_type and taken are used to check if the position has a piece and
-  //the next position is empty. TODO: check if the piece can legally move there
   std::string player_type = searchPlayerType(board, oldMove);
   //std::cout << "PLAYER_TYPE: " << player_type << '\n';
   std::string piece_type = searchPieceType(board,oldMove);
@@ -464,9 +462,7 @@ bool canKingMove(Chess_board board, std::string player) {
   }
   return false;
 }
-
-
-int checkMate(Chess_board board, std::string player, std::string pos) {
+bool isMovingKing(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
   std::string players[] = {"white", "black"};
   int n;
   for (int i = 0; i < 2; i++) {
@@ -475,10 +471,80 @@ int checkMate(Chess_board board, std::string player, std::string pos) {
     }
   }
 
-  if (canDelete(board,pos,players[n],"king") && canKingMove(board, player) != true) {
+  std::string player_type = searchPlayerType(board, oldMove);
+  std::string piece_type = searchPieceType(board,oldMove);
+  std::string taken = searchPlayerType(board,newMove);
 
-    return 1;
-  } else {
-    return 0;
+  if (player_type != player || piece_type == "NULL" ||
+    taken == player || !legalPieceMove(board, oldMove, newMove, player) ) {
+    return true;
   }
+  if (piece_type == "king") {
+    if (canMoveWithoutDelete(board, newMove, players[n])) {
+     return false;
+    } else {
+      return true;
+    }
+  } else {
+      if (pieceBlocks(board, oldMove, newMove, players[n])) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
+
+
+bool pieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+  std::string players[] = {"white", "black"};
+  Chess_board boardt = board;
+  int n;
+  for (int i = 0; i < 2; i++) {
+    if (players[i] != player) {
+      n = i;
+    }
+  }
+
+  for (int x = 0; x < 8; x++) {
+    for (int y = 0; y < 8; y++) {
+
+      if (searchPieceType(boardt, position_x[x] + position_y[y]) == "king" &&
+            searchPlayerType(boardt, position_x[x] + position_y[y]) == player) {
+
+              for (int xt = 0; xt < 8; xt++) {
+                for (int yt = 0; yt < 8; yt++) {
+                  if (!canMove(boardt, position_x[xt] + position_y[yt], position_x[x] + position_y[y], players[n])) {
+                    for (int xtt = 0; xtt < 8; xtt++) {
+                      for (int ytt = 0; ytt < 8; ytt++) {
+                        if (!canMove(boardt, position_x[xt] + position_y[yt], position_x[xtt] + position_y[ytt], players[n]) &&
+                              !canMove(boardt, position_x[xt] + position_y[yt], position_x[x] + position_y[y], players[n])) {
+                          if (newMove == position_x[xtt] + position_y[ytt]) {
+                            return true;
+                          }
+                        }
+                     }
+                   }
+                  }
+                }
+              }
+            }
+    }
+  }
+  return false;
+}
+
+
+
+
+bool inCheck(Chess_board board, std::string player, std::string pos) {
+  std::cout << "inCheck passed in player:" << player << '\n';
+  return canDelete(board,pos,player,"king");
+}
+
+bool checkMate(Chess_board board, std::string player) {
+  std::cout << "checkMate passed in player:" << player << '\n';
+  return !canKingMove(board, player);
 }

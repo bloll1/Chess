@@ -15,14 +15,23 @@ int main(int argc, char const *argv[]) {
   } else {
     turn = 1;
   }
-  int winner = 0;
+  bool winner = false;
+  bool check = false;
   bool can = true;
   std::string oldMove, newMove;
-  while(winner == 0/* && choice != quit*/) {
+  while(!winner/* && choice != quit*/) {
     while (can) {
+
       oldMove = oturn(turn);
+
+
       newMove = nturn();
-      can = canMove(board, oldMove, newMove, player[turn]);
+
+      if (check) {
+        can = isMovingKing(board, oldMove, newMove, player[turn]);
+      } else {
+        can = canMove(board, oldMove, newMove, player[turn]);
+      }
 
       if (can) {
         std::cout << "SORRY CANT DO THAT" << '\n';
@@ -30,14 +39,21 @@ int main(int argc, char const *argv[]) {
     }
 
     board = movePiece(board, oldMove, newMove, player[turn]);
-    winner = checkMate(board, player[!turn], newMove);
-
-    if (winner == 0) {
-      turn = !turn;
+    check = false;
+    if (inCheck(board, player[turn], newMove)) {
+      check = true;
+      winner = checkMate(board, player[!turn]);
     }
 
-    draw_board(board);
 
+
+    draw_board(board);
+    if (check && !winner) {
+      std::cout << "Player: " << player[!turn] << " is in check!" << '\n';
+    }
+    if (!winner) {
+      turn = !turn;
+    }
     can = true;
 
   }
