@@ -15,9 +15,9 @@ std::string new_game() {
   }
   std::cout << '\n';
   if (p == 1) {
-    return "black";
-  } else {
     return "white";
+  } else {
+    return "black";
   }
 }
 
