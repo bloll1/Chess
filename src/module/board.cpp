@@ -108,6 +108,31 @@ for (int y = 0; y < 8; y++) {
   std::cout << std::endl;
 }
 
+Chess_board changePawnToPiece(Chess_board board, int n) {
+  std::cout << "What Would You like your Pawn to Become?" << '\n';
+  std::cout << "Options <queen>, <rook>, <knight>, or <bishop>" << '\n';
+  std::cout << "Enter your awnser: ";
+  std::string awnser;
+  bool correct = false;
+  std::cin >> awnser;
+  std::string piece_names[4] = { "bishop", "queen", "knight", "rook"};
+  while (!correct) {
+
+    for (int i = 0; i < 4; i++) {
+      if (awnser == piece_names[i])
+        correct = true;
+    }
+    if (!correct) {
+      std::cout << "Sorry Incorrect Response" << '\n';
+      std::cout << "Options <queen>, <rook>, <knight>, or <bishop>" << '\n';
+      std::cout << "Enter your awnser: ";
+      std::cin >> awnser;
+    }
+  }
+  Chess_board new_board = board;
+  new_board.piec[n]->chess_piece_type = awnser;
+  return new_board;
+}
 
 Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
     std::string pos;
@@ -125,12 +150,20 @@ Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMov
              new_board.piec[i]->position[0] = new_board.piec[y]->position[0];
              new_board.piec[i]->position[1] = new_board.piec[y]->position[1];
              new_board.piec.erase(new_board.piec.begin()+y);
+             if (new_board.piec[i]->chess_piece_type == "pawn" &&
+                  (new_board.piec[i]->position[1] == "8" || new_board.piec[i]->position[1] == "1")) {
+                    new_board = changePawnToPiece(new_board,i);
+                  }
              break;
            }
          }
        } else {
        new_board.piec[i]->position[0] = newMove[0];
        new_board.piec[i]->position[1] = newMove[1];
+       if (new_board.piec[i]->chess_piece_type == "pawn" &&
+            (new_board.piec[i]->position[1] == "8" || new_board.piec[i]->position[1] == "1")) {
+              new_board = changePawnToPiece(new_board, i);
+            }
      }
        return new_board;
      }

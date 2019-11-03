@@ -41,6 +41,9 @@ public:
 
 };
 
+
+Chess_board changePawnToPiece(Chess_board board, int n);
+
 bool putsInCheck(Chess_board board, std::string oldMove, std::string newMove, std::string player);
 
 bool movingPieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player);
