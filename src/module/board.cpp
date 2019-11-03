@@ -676,11 +676,33 @@ bool pieceBlocks(Chess_board board, std::string player) {
   return false;
 }
 
-
+bool putsInCheck(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+  std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+  std::string players[] = {"white", "black"};
+  Chess_board boardt = board;
+  std::cout << "putsInCheck player: " << player<< '\n';
+  Chess_board new_board = board;
+  new_board = movePiece(new_board, oldMove, newMove, player);
+  std::string piece;
+  std::string piece_player;
+  for (int x = 0; x < 8; x++) {
+    for (int y = 0; y < 8; y++) {
+      piece = searchPieceType(new_board, position_x[x] + position_y[y]);
+      piece_player = searchPlayerType(new_board, position_x[x] + position_y[y]);
+      if (piece != "NULL" && piece_player != player &&
+            canDelete(new_board, position_x[x] + position_y[y], piece_player, "king")) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 
 bool inCheck(Chess_board board, std::string player, std::string pos) {
   std::cout << "inCheck passed in player:" << player << '\n';
+  std::cout << "inCheck pass in" << '\n';
   return canDelete(board,pos,player,"king");
 }
 

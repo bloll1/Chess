@@ -41,6 +41,8 @@ public:
 
 };
 
+bool putsInCheck(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
 bool movingPieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player);
 
 void draw_box(Chess_board board, std::string pos);

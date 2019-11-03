@@ -30,7 +30,11 @@ int main(int argc, char const *argv[]) {
       if (check) {
         can = isMovingKing(board, oldMove, newMove, player[turn]);
       } else {
+
         can = canMove(board, oldMove, newMove, player[turn]);
+        if (!can) {
+          can = putsInCheck(board, oldMove, newMove, player[turn]);
+        }
       }
 
       if (can) {
