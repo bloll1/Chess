@@ -149,7 +149,8 @@ Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMov
              std::cout << "CALLEd" << '\n';
              new_board.piec[i]->position[0] = new_board.piec[y]->position[0];
              new_board.piec[i]->position[1] = new_board.piec[y]->position[1];
-             new_board.piec.erase(new_board.piec.begin()+y);
+             std::cerr << "DELETING "  << new_board.piec[y]->chess_piece_type << " at X " << new_board.piec[y]->position[0] << " Y " << new_board.piec[y]->position[1]<< '\n';
+             new_board.piec.erase(new_board.piec.begin()+i);
              if (new_board.piec[i]->chess_piece_type == "pawn" &&
                   (new_board.piec[i]->position[1] == "8" || new_board.piec[i]->position[1] == "1")) {
                     new_board = changePawnToPiece(new_board,i);
