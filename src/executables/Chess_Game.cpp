@@ -56,7 +56,7 @@ int main(int argc, char const *argv[]) {
       std::cout << "Player: " << player[turn] << " is in check!" << '\n';
     }
     if (!winner) {
-      //turn = !turn;
+      turn = !turn;
     }
     can = true;
 
