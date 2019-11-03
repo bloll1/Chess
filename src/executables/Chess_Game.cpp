@@ -19,8 +19,8 @@ int main(int argc, char const *argv[]) {
   bool check = false;
   bool can = true;
   std::string oldMove, newMove;
-  while(!winner/* && choice != quit*/) {
-    while (can) {
+  while(!winner && oldMove != "quit"  && newMove != "quit") {
+    while (can && oldMove != "quit"  && newMove != "quit") {
 
       oldMove = oturn(turn);
 
