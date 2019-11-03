@@ -560,17 +560,77 @@ bool isMovingKing(Chess_board board, std::string oldMove, std::string newMove, s
       return true;
     }
   } else {
-      if (pieceBlocks(board, oldMove, newMove, players[n])) {
+       if (movingPieceBlocks(board, oldMove, newMove, player)) {
         return false;
       } else {
         return true;
-      }
+
+      return true;
     }
   }
+}
+
+
+bool movingPieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+  std::cout << "CALLED movingPieceBlocks" << '\n';
+  std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+ std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+ std::string players[] = {"white", "black"};
+ Chess_board boardt = board;
+ int n;
+ for (int i = 0; i < 2; i++) {
+   if (players[i] != player) {
+     n = i;
+   }
+ }
+ for (int b = 0; b < 8; b++) {
+   for (int z = 0; z < 8; z++) {
+     if (searchPieceType(boardt, position_x[b] + position_y[z]) == "queen" &&
+           searchPlayerType(boardt, position_x[b] + position_y[z]) == players[n] &&
+          position_x[b] + position_y[z] == newMove) {
+            return true;
+     }
+   }
+ }
+ for (int x = 0; x < 8; x++) {
+   for (int y = 0; y < 8; y++) {
+
+     if (searchPieceType(boardt, position_x[x] + position_y[y]) == "king" &&
+           searchPlayerType(boardt, position_x[x] + position_y[y]) == player) {
+             std::cout << "Found King at: " << position_x[x] + position_y[y]  << " " <<  player << '\n';
+             for (int xt = 0; xt < 8; xt++) {
+               for (int yt = 0; yt < 8; yt++) {
+                 if (!canMove(boardt, position_x[xt] + position_y[yt], position_x[x] + position_y[y], players[n])) {
+                   std::cout << "Found Piece checking King at: "  << position_x[xt] + position_y[yt] << " " << players[n]<< '\n';
+                   for (int xtt = 0; xtt < 8; xtt++) {
+                     for (int ytt = 0; ytt < 8; ytt++) {
+                       if (!canMove(boardt, position_x[xt] + position_y[yt], position_x[xtt] + position_y[ytt], players[n]) &&
+                           searchPieceType(boardt, position_x[xtt] + position_y[ytt]) == "NULL") {
+                         for (int xttt = 0; xttt < 8; xttt++) {
+                           for (int yttt = 0; yttt < 8; yttt++) {
+                             std::cout << "MADE IT THIS FAR" << '\n';
+                             if (!canMove(boardt, position_x[xttt] + position_y[yttt], position_x[xtt] + position_y[ytt], player) &&
+                                  position_x[xttt] + position_y[yttt] == oldMove && position_x[xtt] + position_y[ytt] == newMove) {
+                               return true;
+                             }
+                           }
+                         }
+                       }
+                    }
+                  }
+                 }
+               }
+             }
+           }
+   }
+ }
+ return false;
+}
 
 
 
-bool pieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+bool pieceBlocks(Chess_board board, std::string player) {
+  std::cout << "Called Piece Blocks" << '\n';
   std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
   std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
   std::string players[] = {"white", "black"};
@@ -587,16 +647,22 @@ bool pieceBlocks(Chess_board board, std::string oldMove, std::string newMove, st
 
       if (searchPieceType(boardt, position_x[x] + position_y[y]) == "king" &&
             searchPlayerType(boardt, position_x[x] + position_y[y]) == player) {
-
+              std::cout << "Found King at: " << position_x[x] + position_y[y]  << " " <<  player << '\n';
               for (int xt = 0; xt < 8; xt++) {
                 for (int yt = 0; yt < 8; yt++) {
                   if (!canMove(boardt, position_x[xt] + position_y[yt], position_x[x] + position_y[y], players[n])) {
+                    std::cout << "Found Piece checking King at: "  << position_x[xt] + position_y[yt] << " " << players[n]<< '\n';
                     for (int xtt = 0; xtt < 8; xtt++) {
                       for (int ytt = 0; ytt < 8; ytt++) {
                         if (!canMove(boardt, position_x[xt] + position_y[yt], position_x[xtt] + position_y[ytt], players[n]) &&
-                              !canMove(boardt, position_x[xt] + position_y[yt], position_x[x] + position_y[y], players[n])) {
-                          if (newMove == position_x[xtt] + position_y[ytt]) {
-                            return true;
+                            searchPieceType(boardt, position_x[xtt] + position_y[ytt]) == "NULL") {
+                          for (int xttt = 0; xttt < 8; xttt++) {
+                            for (int yttt = 0; yttt < 8; yttt++) {
+                              std::cout << "MADE IT THIS FAR" << '\n';
+                              if (!canMove(boardt, position_x[xttt] + position_y[yttt], position_x[xtt] + position_y[ytt], player)) {
+                                return true;
+                              }
+                            }
                           }
                         }
                      }
@@ -620,5 +686,8 @@ bool inCheck(Chess_board board, std::string player, std::string pos) {
 
 bool checkMate(Chess_board board, std::string player) {
   std::cout << "checkMate passed in player:" << player << '\n';
-  return !canKingMove(board, player);
+  if (!canKingMove(board, player) && !pieceBlocks(board, player)) {
+    return true;
+  } else
+    return false;
 }

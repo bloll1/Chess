@@ -49,7 +49,7 @@ int main(int argc, char const *argv[]) {
 
     draw_board(board);
     if (check && !winner) {
-      std::cout << "Player: " << player[!turn] << " is in check!" << '\n';
+      std::cout << "Player: " << player[turn] << " is in check!" << '\n';
     }
     if (!winner) {
       turn = !turn;

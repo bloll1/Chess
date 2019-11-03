@@ -47,7 +47,7 @@ int checkStart(std::string player) {
 
 
 std::string oturn(int turn) {
-  if (turn) {
+  if (!turn) {
     std::cout << "Black's turn" << '\n';
   } else {
     std::cout << "White's turn" << '\n';

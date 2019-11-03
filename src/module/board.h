@@ -41,11 +41,13 @@ public:
 
 };
 
-void draw_box(Chess_board board, std::string pos); 
+bool movingPieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
+void draw_box(Chess_board board, std::string pos);
 
 std::string getPiece(Chess_board board, std::string pos);
 
-bool pieceBlocks(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+bool pieceBlocks(Chess_board board, std::string player);
 
 bool isMovingKing(Chess_board board, std::string oldMove, std::string newMove, std::string player);
 
