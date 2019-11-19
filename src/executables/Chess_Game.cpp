@@ -38,10 +38,10 @@ int main(int argc, char const *argv[]) {
       }
 
       if (can) {
+        draw_board(board);
         std::cout << "SORRY CANT DO THAT" << '\n';
       }
     }
-    std::cout << "MOVING THE PIECE (44)" << '\n';
     std::string taken = searchPlayerType(board,newMove);
     if (taken != player[turn] && taken != "NULL")
       board = deletePiece(board, newMove, player[!turn]);
