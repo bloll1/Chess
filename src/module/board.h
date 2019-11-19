@@ -41,6 +41,7 @@ public:
 
 };
 
+Chess_board deletePiece(Chess_board board, std::string newMove, std::string player);
 
 Chess_board changePawnToPiece(Chess_board board, int n);
 

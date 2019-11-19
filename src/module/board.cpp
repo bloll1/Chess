@@ -134,43 +134,38 @@ Chess_board changePawnToPiece(Chess_board board, int n) {
   return new_board;
 }
 
+Chess_board deletePiece(Chess_board board, std::string newMove, std::string player) {
+  Chess_board new_board = board;
+  for (int i = 0; i < (int)board.piec.size(); i++) {
+    std::string pos = new_board.piec[i]->position[0] + new_board.piec[i]->position[1];
+    if (newMove == pos) {
+      std::cerr << "DELETING "  << new_board.piec[i]->chess_piece_type << " at X " << new_board.piec[i]->position[0] << " Y " << new_board.piec[i]->position[1] << '\n';
+      new_board.piec.erase(new_board.piec.begin()+i);
+      return new_board;
+    }
+  }
+  return new_board;
+}
+
+
+
 Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
     std::string pos;
-    std::string delpos;
     Chess_board new_board = board;
-    std::string taken = searchPlayerType(board,newMove);
-  for (int i = 0; i < (int)board.piec.size(); i++) {
-     pos = new_board.piec[i]->position[0] + new_board.piec[i]->position[1];
-     if (oldMove == pos) {
-       if (taken != player && taken != "NULL") {
-         for (int y = 0; y < (int)board.piec.size(); y++) {
-           delpos = new_board.piec[y]->position[0] + new_board.piec[y]->position[1];
-           if (newMove == delpos) {
-             std::cout << "CALLEd" << '\n';
-             new_board.piec[i]->position[0] = new_board.piec[y]->position[0];
-             new_board.piec[i]->position[1] = new_board.piec[y]->position[1];
-             std::cerr << "DELETING "  << new_board.piec[y]->chess_piece_type << " at X " << new_board.piec[y]->position[0] << " Y " << new_board.piec[y]->position[1]<< '\n';
-             new_board.piec.erase(new_board.piec.begin()+i);
-             if (new_board.piec[i]->chess_piece_type == "pawn" &&
-                  (new_board.piec[i]->position[1] == "8" || new_board.piec[i]->position[1] == "1")) {
-                    new_board = changePawnToPiece(new_board,i);
-                  }
-             break;
-           }
-         }
-       } else {
-       new_board.piec[i]->position[0] = newMove[0];
-       new_board.piec[i]->position[1] = newMove[1];
-       if (new_board.piec[i]->chess_piece_type == "pawn" &&
-            (new_board.piec[i]->position[1] == "8" || new_board.piec[i]->position[1] == "1")) {
-              new_board = changePawnToPiece(new_board, i);
+    for (int y = 0; y < (int)board.piec.size(); y++) {
+      pos = new_board.piec[y]->position[0] + new_board.piec[y]->position[1];
+      if (oldMove == pos){
+       std::cerr << "MOVING "  << new_board.piec[y]->chess_piece_type << " at X " << new_board.piec[y]->position[0] << " Y " << new_board.piec[y]->position[1] << '\n';
+       new_board.piec[y]->position[0] = newMove[0];
+       new_board.piec[y]->position[1] = newMove[1];
+       if (new_board.piec[y]->chess_piece_type == "pawn" &&
+            (new_board.piec[y]->position[1] == "8" || new_board.piec[y]->position[1] == "1")) {
+              new_board = changePawnToPiece(new_board, y);
             }
-     }
        return new_board;
+        }
      }
-  }
   return board;
-
 }
 
 
@@ -272,12 +267,12 @@ bool legalPawnMove(Chess_board board, std::string oldMove, std::string newMove, 
       std::cout << "FAILED HERE 239" << '\n';
       return false;
     } else if (changeX != 0){
-      if ((changeX == 1 || changeX == -1) && searchPlayerType(board, newMove) != player) {
-        return true;
-      } else {
+      if ((changeX == 1 || changeX == -1) && (searchPlayerType(board, newMove) == player || searchPlayerType(board, newMove) == "NULL")) {
         std::cout << "FAILED X: " <<changeX << " PLAYER_TYPE: " <<  searchPlayerType(board, newMove) << '\n';
         std::cout << "FAILED HERE 245" << '\n';
         return false;
+      } else {
+        return true;
       }
     } else if (searchPlayerType(board, newMove) != player && searchPlayerType(board, newMove) != "NULL"){
       std::cout << "FAILED HERE 249" << '\n';
