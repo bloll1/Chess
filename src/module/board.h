@@ -7,22 +7,26 @@
 #include <cstring>
 #include <array>
 
+static const std::string position_x[8] = {"a","b","c","d","e","f","g","h"};
+static const std::string position_y[8] = {"1","2","3","4","5","6","7","8"};
+static const std::string players[] = {"white", "black"};
+
 struct Chess_board {
 public:
-  //std::string chess_piece_types[6] = {"pawn","bishop","knight","king","queen",
-              //                        "rook"};
+
+
   std::vector<Chess_piece*> piec;
 
   std::vector< char( * ) > boardcord;
 
 
   Chess_board(){
-    char position_x[8] = {'a','b','c','d','e','f','g','h'};
-    char position_y[8] = {'1','2','3','4','5','6','7','8'};
+    char cordx[8] = {'a','b','c','d','e','f','g','h'};
+    char cordy[8] = {'1','2','3','4','5','6','7','8'};
     for (int x = 0; x < 8; x++) {
       for (int y = 0; y < 8; y++) {
         char * str3 = (char *)malloc(3);
-        char arb[3] = {position_x[x % 8] ,position_y[y % 8] , '\0'};
+        char arb[3] = {cordx[x % 8] ,cordy[y % 8] , '\0'};
         strncpy(str3, (char *)arb, 3);
         boardcord.push_back(str3);
       }

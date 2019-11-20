@@ -3,14 +3,13 @@
 #include <iostream>
 
 int main(int argc, char const *argv[]) {
-  std::string player[] = {"white", "black"};
   Chess_board board = initialize_board();
   draw_board(board);
 
   std::string choice = new_game();
   int turn;
 
-  if (choice == player[0]) {
+  if (choice == players[0]) {
     turn = 0;
   } else {
     turn = 1;
@@ -28,12 +27,12 @@ int main(int argc, char const *argv[]) {
       newMove = nturn();
 
       if (check) {
-        can = isMovingKing(board, oldMove, newMove, player[turn]);
+        can = isMovingKing(board, oldMove, newMove, players[turn]);
       } else {
 
-        can = canMove(board, oldMove, newMove, player[turn]);
+        can = canMove(board, oldMove, newMove, players[turn]);
         if (!can) {
-          can = putsInCheck(board, oldMove, newMove, player[turn]);
+          can = putsInCheck(board, oldMove, newMove, players[turn]);
         }
       }
 
@@ -43,21 +42,21 @@ int main(int argc, char const *argv[]) {
       }
     }
     std::string taken = searchPlayerType(board,newMove);
-    if (taken != player[turn] && taken != "NULL")
-      board = deletePiece(board, newMove, player[!turn]);
+    if (taken != players[turn] && taken != "NULL")
+      board = deletePiece(board, newMove, players[!turn]);
 
-    board = movePiece(board, oldMove, newMove, player[turn]);
+    board = movePiece(board, oldMove, newMove, players[turn]);
     check = false;
-    if (inCheck(board, player[turn], newMove)) {
+    if (inCheck(board, players[turn], newMove)) {
       check = true;
-      winner = checkMate(board, player[!turn]);
+      winner = checkMate(board, players[!turn]);
     }
 
 
 
     draw_board(board);
     if (check && !winner) {
-      std::cout << "Player: " << player[turn] << " is in check!" << '\n';
+      std::cout << "Player: " << players[turn] << " is in check!" << '\n';
     }
     if (!winner) {
       turn = !turn;
@@ -65,6 +64,6 @@ int main(int argc, char const *argv[]) {
     can = true;
 
   }
-  std::cout << "Congratulations player " << player[turn] << " you win!" << '\n';
+  std::cout << "Congratulations players " << players[turn] << " you win!" << '\n';
   return 0;
 }
