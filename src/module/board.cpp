@@ -3,6 +3,11 @@
 #include <sstream>
 #include <string>
 
+
+
+/*initialize_board: Creates a new Chess_boardand loads all the pieces into there
+*   appropriate positions
+*/
 Chess_board initialize_board() {
     Chess_board *new_board = new Chess_board();
     std::string chess_pieces[8] = {"rook","knight","bishop","king","queen",
@@ -154,11 +159,98 @@ Chess_board deletePiece(Chess_board board, std::string newMove, std::string play
 
 
 
-
+Chess_board moveCastle(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+  std::string piece_type = searchPieceType(board,oldMove);
+  std::string pos;
+  std::string posN;
+  std::string oldMoveN = oldMove;
+  std::string newMoveN = newMove;
+  Chess_board new_board = board;
+  if (piece_type != "king") {
+      newMoveN = oldMove;
+      oldMoveN = newMove;
+  }
+    if (newMoveN == "a8") {
+      for (int y = 0; y < (int)board.piec.size(); y++) {
+        pos = new_board.piec[y]->position[0] + new_board.piec[y]->position[1];
+        if (newMoveN == pos){
+          for (int x = 0; x < (int)board.piec.size(); x++) {
+            posN = new_board.piec[x]->position[0] + new_board.piec[x]->position[1];
+            if (oldMoveN == posN){
+              new_board.piec[y]->position[0] = "c";
+              new_board.piec[y]->position[1] = "8";
+              new_board.piec[x]->position[0] = "b";
+              new_board.piec[x]->position[1] = "8";
+            }
+          }
+        }
+      }
+    } else if (newMoveN == "a1") {
+      for (int y = 0; y < (int)board.piec.size(); y++) {
+        pos = new_board.piec[y]->position[0] + new_board.piec[y]->position[1];
+        if (newMoveN == pos){
+          for (int x = 0; x < (int)board.piec.size(); x++) {
+            posN = new_board.piec[x]->position[0] + new_board.piec[x]->position[1];
+            if (oldMoveN == posN){
+              new_board.piec[y]->position[0] = "c";
+              new_board.piec[y]->position[1] = "1";
+              new_board.piec[x]->position[0] = "b";
+              new_board.piec[x]->position[1] = "1";
+            }
+          }
+        }
+      }
+    } else if (newMoveN == "h8") {
+      for (int y = 0; y < (int)board.piec.size(); y++) {
+        pos = new_board.piec[y]->position[0] + new_board.piec[y]->position[1];
+        if (newMoveN == pos){
+          for (int x = 0; x < (int)board.piec.size(); x++) {
+            posN = new_board.piec[x]->position[0] + new_board.piec[x]->position[1];
+            if (oldMoveN == posN){
+              new_board.piec[y]->position[0] = "e";
+              new_board.piec[y]->position[1] = "8";
+              new_board.piec[x]->position[0] = "f";
+              new_board.piec[x]->position[1] = "8";
+            }
+          }
+        }
+      }
+    } else {
+      for (int y = 0; y < (int)board.piec.size(); y++) {
+        pos = new_board.piec[y]->position[0] + new_board.piec[y]->position[1];
+        if (newMoveN == pos){
+          for (int x = 0; x < (int)board.piec.size(); x++) {
+            posN = new_board.piec[x]->position[0] + new_board.piec[x]->position[1];
+            if (oldMoveN == posN){
+              new_board.piec[y]->position[0] = "e";
+              new_board.piec[y]->position[1] = "1";
+              new_board.piec[x]->position[0] = "f";
+              new_board.piec[x]->position[1] = "1";
+            }
+          }
+        }
+      }
+    }
+    return new_board;
+}
 
 
 
 Chess_board movePiece(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
+  std::string player_type = searchPlayerType(board, oldMove);
+  std::string piece_type = searchPieceType(board,oldMove);
+  std::string newPiece_type = searchPieceType(board,newMove);
+  std::string taken = searchPlayerType(board,newMove);
+
+  if (((piece_type == "king" && newPiece_type == "rook") ||
+        (piece_type == "rook" && newPiece_type == "king")) &&
+          player_type == taken) {
+          return moveCastle(board, oldMove, newMove, player);
+        }
+
+
+
+
   std::string pos;
   Chess_board new_board = board;
   for (int y = 0; y < (int)board.piec.size(); y++) {
@@ -208,17 +300,72 @@ std::string searchPlayerType(Chess_board board, std::string move) {
   return "NULL";
 }
 
+bool canCastle(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
 
+  std::string piece_type = searchPieceType(board,oldMove);
+  std::string player_type;
+  std::string oldMoveN = oldMove;
+  Chess_board new_board = board;
+  if (piece_type != "king") {
+      oldMoveN = newMove;
+  }
+  if (oldMoveN == "a8") {
+    player_type = searchPlayerType(board, "b8");
+    if (player_type == "NULL") {
+      player_type = searchPlayerType(board, "c8");
+      if (player_type == "NULL") {
+        return true;
+      }
+    }
+  } else if (oldMoveN == "h8") {
+    player_type = searchPlayerType(board, "g8");
+    if (player_type == "NULL") {
+      player_type = searchPlayerType(board, "f8");
+      if (player_type == "NULL") {
+        player_type = searchPlayerType(board, "e8");
+        if (player_type == "NULL") {
+          return true;
+        }
+      }
+    }
+  } else if (oldMoveN == "a1") {
+      player_type = searchPlayerType(board, "b1");
+      if (player_type == "NULL") {
+        player_type = searchPlayerType(board, "c1");
+        if (player_type == "NULL") {
+          return true;
+        }
+      }
+  } else if (oldMoveN == "h1") {
+      player_type = searchPlayerType(board, "g1");
+      if (player_type == "NULL") {
+        player_type = searchPlayerType(board, "f1");
+        if (player_type == "NULL") {
+          player_type = searchPlayerType(board, "e1");
+          if (player_type == "NULL") {
+            return true;
+          }
+        }
+      }
+    }
 
+  return false;
+}
 
 
 
 bool canMove(Chess_board board, std::string oldMove, std::string newMove, std::string player) {
   std::string player_type = searchPlayerType(board, oldMove);
   std::string piece_type = searchPieceType(board,oldMove);
+  std::string newPiece_type = searchPieceType(board,newMove);
   std::string taken = searchPlayerType(board,newMove);
 
-  if (player_type != player || piece_type == "NULL" ||
+  if (((piece_type == "king" && newPiece_type == "rook") ||
+        (piece_type == "rook" && newPiece_type == "king")) &&
+          player_type == taken) {
+          return !canCastle(board, oldMove, newMove, player);
+        }
+  else if (player_type != player || piece_type == "NULL" ||
     taken == player || !legalPieceMove(board, oldMove, newMove, player)) {
     return true;
   }
@@ -491,8 +638,6 @@ bool legalQueenMove(Chess_board board, std::string oldMove, std::string newMove)
     return legalBishopMove(board, oldMove, newMove);
   }
 }
-
-
 
 
 

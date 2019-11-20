@@ -1,5 +1,6 @@
 #include "board.h"
 #include "interface.h"
+#include "ChessAI.h"
 #include <iostream>
 
 int main(int argc, char const *argv[]) {

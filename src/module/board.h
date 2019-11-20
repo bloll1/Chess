@@ -45,6 +45,11 @@ public:
 
 };
 
+
+Chess_board moveCastle(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
+bool canCastle(Chess_board board, std::string oldMove, std::string newMove, std::string player);
+
 Chess_board deletePiece(Chess_board board, std::string newMove, std::string player);
 
 Chess_board changePawnToPiece(Chess_board board, int n);
